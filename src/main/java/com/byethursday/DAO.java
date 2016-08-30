@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 public class DAO {
 
+	// jdbc driver
 	static final String DB_URL = "jdbc:mysql://localhost:3306/?user=root&autoReconnect=true&useSSL=false";
 	static final String USER = "root";
 	static final String PASSWORD = "sesame";
@@ -18,6 +19,7 @@ public class DAO {
 	public static void connToDB() {
 
 		try {
+
 			System.out.println("Trying to connect to the DB...");
 			CONN = DriverManager.getConnection(DB_URL, USER, PASSWORD);
 			System.out.println("Connected to DB.");
@@ -33,30 +35,30 @@ public class DAO {
 
 		connToDB();
 
-		ArrayList<Student> ourStudents = new ArrayList<>();
+		ArrayList<Animal> ourZoo = new ArrayList<>();
 
 		try {
 
 			STMT = CONN.createStatement();
-			RES_SET = STMT.executeQuery("SELECT * FROM students.students;");
+			RES_SET = STMT.executeQuery("SELECT * FROM our_schema.zoo;");
 
 			while (RES_SET.next()) {
 
-				Student studentInDB = new Student();
+				Animal animalInDB = new Animal();
 
-				studentInDB.setStudentID(RES_SET.getString("students_id"));
-				studentInDB.setLastName(RES_SET.getString("last_name"));
-				studentInDB.setFirstName(RES_SET.getString("first_name"));
-				studentInDB.setGpa(RES_SET.getDouble("student_gpa"));
+				animalInDB.setName(RES_SET.getString("name"));
+				animalInDB.setSpecies(RES_SET.getString("species"));
+				animalInDB.setEnclosure(RES_SET.getString("enclosure"));
+				animalInDB.setFood(RES_SET.getString("food"));
 
-				ourStudents.add(studentInDB);
+				ourZoo.add(animalInDB);
 
 			}
 
-			for (Student student : ourStudents) {
-				System.out.println(student.toString());
-			}
-
+		for (Animal animal : ourZoo) {
+			System.out.println(animal);
+		}
+		
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -64,68 +66,62 @@ public class DAO {
 	}
 
 	public static void writeToDatabase() {
-		
-		Student studentToAdd = new Student();
-		
-		studentToAdd = aboutTheStudent();
-		
+
+		Animal animalToAdd = new Animal();
+
+		animalToAdd = aboutTheStudent();
+
 		try {
-			
+
 			connToDB();
-			
+
 			PREP_STMT = CONN.prepareStatement(insertIntoTable);
-			
-			PREP_STMT.setString(1, studentToAdd.getLastName());
-			PREP_STMT.setString(2, studentToAdd.getFirstName());
-			PREP_STMT.setDouble(3, studentToAdd.getGpa());
-			
+
+			PREP_STMT.setString(1, animalToAdd.getName());
+			PREP_STMT.setString(2, animalToAdd.getSpecies());
+			PREP_STMT.setString(3, animalToAdd.getEnclosure());
+			PREP_STMT.setString(4, animalToAdd.getFood());
+
 			System.out.println(PREP_STMT);
-			
+
 			PREP_STMT.executeUpdate();
-			
+
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		
-		
 	}
-	
-	private static String insertIntoTable = "INSERT INTO `students`.`students`"
-			+ "(last_name, first_name, student_gpa)"
+
+	private static String insertIntoTable = "INSERT INTO `our_schema`.`zoo`" 
+			+ "(name, species, enclosure, food)"
 			+ " VALUES " 
-			+ "(?, ?, ?)";
+			+ "(?, ?, ?, ?)";
 
-	private static Student aboutTheStudent() {
-		
+	private static Animal aboutTheStudent() {
+
 		Scanner sc = new Scanner(System.in);
-		
-		Student studentToAdd = new Student();
 
-		System.out.println("What is the student's last name?");
-		 
-		studentToAdd.setLastName(sc.nextLine());
-		
-		System.out.println("What is the student's first name?");
-		
-		studentToAdd.setFirstName(sc.nextLine());
+		Animal animalToAdd = new Animal();
 
-		System.out.println("What is the student's GPA?");
-		String gpaInput = sc.nextLine();
+		System.out.println("What is the animal's name?");
+
+		animalToAdd.setName(sc.nextLine());
+
+		System.out.println("What is the animal's species?");
+
+		animalToAdd.setSpecies(sc.nextLine());
+
+		System.out.println("What kind of enclosure does the animal live in?");
+
+		animalToAdd.setEnclosure(sc.nextLine());
 		
-		studentToAdd.setGpa(Double.parseDouble(gpaInput));
+		System.out.println("What kind of food does the animal eat?");
 		
-		return studentToAdd;
+		animalToAdd.setFood(sc.nextLine());
+		
+		sc.close();
+		return animalToAdd;
 	}
 
-
-
-
-
-
-
-
-
-
-} //class
+} // class

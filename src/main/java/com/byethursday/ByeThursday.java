@@ -10,7 +10,7 @@ public class ByeThursday {
 
 		boolean loopTheMenu = false;
 
-		System.out.println("Welcome to the Student Information Program");
+		System.out.println("Welcome to the Zoo Information Program");
 
 		do {
 			System.out.println("Press 1 to view the DB" + "\nPress 2 to Add to the database");
@@ -32,7 +32,7 @@ public class ByeThursday {
 		
 		
 		
-
+		sc.close();
 	}
 
 	
